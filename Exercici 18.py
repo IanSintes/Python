@@ -8,6 +8,7 @@ print("es_vocal('b') =", es_vocal('b'))
 print("es_vocal('O') =", es_vocal('O'))
 print("es_vocal('z') =", es_vocal('z'))
 
+
 #Programa fet amb en joan
 def ex18(c):
     v = "aeiouAEIOUàáèéìíòóùúÀÁÈÉÌÍÒÓÙÚ"
@@ -15,4 +16,5 @@ def ex18(c):
         return True
     else:
         return False
-c= input("Escriu un caracter per a provar si es vocal o no")
+c = input("Escriu un caracter per a provar si es vocal o no: ")
+print(ex18(c))
