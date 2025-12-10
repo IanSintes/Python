@@ -44,6 +44,7 @@ for fila in range(files_blocs):
 rellotge = pygame.time.Clock()
 FPS = 60
 joc_actiu = True
+joc_comenca = False  # La pilota no es mou fins pitjar barra
 
 while joc_actiu:
     pantalla.fill(NEGRE)
@@ -51,6 +52,9 @@ while joc_actiu:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             joc_actiu = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                joc_comenca = True
 
     tecles = pygame.key.get_pressed()
     if tecles[pygame.K_LEFT]:
@@ -59,30 +63,32 @@ while joc_actiu:
         barra_x += velocitat_barra
     barra_x = max(0, min(barra_x, pantalla_amplada - barra_amplada))
 
-    pilota_x += velocitat_pilota_x
-    pilota_y += velocitat_pilota_y
+    if joc_comenca:
+        pilota_x += velocitat_pilota_x
+        pilota_y += velocitat_pilota_y
 
-    if pilota_x - pilota_radius <= 0 or pilota_x + pilota_radius >= pantalla_amplada:
-        velocitat_pilota_x *= -1
-    if pilota_y - pilota_radius <= 0:
-        velocitat_pilota_y *= -1
-    if pilota_y + pilota_radius >= pantalla_alçada:
-        pilota_x = pantalla_amplada // 2
-        pilota_y = pantalla_alçada // 2
-        velocitat_pilota_y *= -1
-
-    barra_rect = pygame.Rect(barra_x, barra_y, barra_amplada, barra_alçada)
-    pilota_rect = pygame.Rect(pilota_x - pilota_radius, pilota_y - pilota_radius, pilota_radius*2, pilota_radius*2)
-    if pilota_rect.colliderect(barra_rect):
-        velocitat_pilota_y *= -1
-        offset = (pilota_x - (barra_x + barra_amplada / 2)) / (barra_amplada / 2)
-        velocitat_pilota_x = 5 * offset
-
-    for bloc in blocs[:]:
-        if pilota_rect.colliderect(bloc):
-            blocs.remove(bloc)
+        if pilota_x - pilota_radius <= 0 or pilota_x + pilota_radius >= pantalla_amplada:
+            velocitat_pilota_x *= -1
+        if pilota_y - pilota_radius <= 0:
             velocitat_pilota_y *= -1
-            break
+        if pilota_y + pilota_radius >= pantalla_alçada:
+            pilota_x = pantalla_amplada // 2
+            pilota_y = pantalla_alçada // 2
+            velocitat_pilota_y *= -1
+            joc_comenca = False  # Espera altra vegada barra
+
+        barra_rect = pygame.Rect(barra_x, barra_y, barra_amplada, barra_alçada)
+        pilota_rect = pygame.Rect(pilota_x - pilota_radius, pilota_y - pilota_radius, pilota_radius*2, pilota_radius*2)
+        if pilota_rect.colliderect(barra_rect):
+            velocitat_pilota_y *= -1
+            offset = (pilota_x - (barra_x + barra_amplada / 2)) / (barra_amplada / 2)
+            velocitat_pilota_x = 5 * offset
+
+        for bloc in blocs[:]:
+            if pilota_rect.colliderect(bloc):
+                blocs.remove(bloc)
+                velocitat_pilota_y *= -1
+                break
 
     pantalla.blit(barra_img, (barra_x, barra_y))
     pantalla.blit(pilota_img, (pilota_x - pilota_radius, pilota_y - pilota_radius))
