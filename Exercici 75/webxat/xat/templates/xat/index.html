@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Webxat</title>
+</head>
+<body>
+<h1>Webxat</h1>
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="text" placeholder="Escriu un missatge">
+    <button type="submit">Enviar</button>
+</form>
+
+<ul>
+{% for missatge in missatges %}
+    <li><strong>{{ missatge.usuari.username }}:</strong> {{ missatge.text }}</li>
+{% endfor %}
+</ul>
+</body>
+</html>
+
